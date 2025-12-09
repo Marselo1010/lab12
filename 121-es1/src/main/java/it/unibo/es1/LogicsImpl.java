@@ -1,5 +1,6 @@
 package it.unibo.es1;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -8,6 +9,11 @@ import java.util.List;
 public class LogicsImpl implements Logics {
 
     private static final String ERROR_MESSAGE = "Unimplemented method";
+    private final int size;
+    private List<Integer> list= new LinkedList<>();
+    private List<Boolean> boolList= new LinkedList<>();
+    private String s= "";
+
 
     /**
      * Constructor.
@@ -15,7 +21,7 @@ public class LogicsImpl implements Logics {
      * @param size the size of the logics
      */
     public LogicsImpl(final int size) {
-        throw new UnsupportedOperationException(ERROR_MESSAGE);
+        this.size = size;
     }
 
     /**
@@ -23,7 +29,7 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public int size() {
-        throw new UnsupportedOperationException(ERROR_MESSAGE);
+        return this.size;
     }
 
     /**
@@ -31,7 +37,11 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public List<Integer> values() {
-        throw new UnsupportedOperationException(ERROR_MESSAGE);
+
+        for(int i = 0; i < size; i++) {
+            list.add(i, 0);
+        }
+        return list;
     }
 
     /**
@@ -39,7 +49,15 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public List<Boolean> enabledStates() {
-        throw new UnsupportedOperationException(ERROR_MESSAGE);
+
+        for(int i = 0; i < size; i++) {
+            if (list.get(i) == size) {
+                boolList.add(i,false);
+            } else {
+                boolList.add(i,true);
+            }
+        }
+        return this.boolList;
     }
 
     /**
@@ -47,7 +65,8 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public int hit(final int elem) {
-        throw new UnsupportedOperationException(ERROR_MESSAGE);
+        list.set(elem, list.get(elem) + 1);
+        return this.list.get(elem);
     }
 
     /**
@@ -55,7 +74,11 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public String result() {
-        throw new UnsupportedOperationException(ERROR_MESSAGE);
+        
+        list.stream()
+            .forEach(i -> s.concat(String.valueOf(i)).concat(" | "));
+
+        return "<< " + s + ">>";
     }
 
     /**
