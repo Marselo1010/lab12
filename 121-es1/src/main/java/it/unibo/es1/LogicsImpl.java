@@ -2,18 +2,17 @@ package it.unibo.es1;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Collections;
 
 /**
  * Implementation of the Logics interface.
  */
 public class LogicsImpl implements Logics {
 
-    private static final String ERROR_MESSAGE = "Unimplemented method";
     private final int size;
-    private List<Integer> list= new LinkedList<>();
-    private List<Boolean> boolList= new LinkedList<>();
-    private String s= "";
-
+    private final List<Integer> list;
+    private final List<Boolean> boolList;
+    private String s = "";
 
     /**
      * Constructor.
@@ -22,6 +21,14 @@ public class LogicsImpl implements Logics {
      */
     public LogicsImpl(final int size) {
         this.size = size;
+        this.list = new LinkedList<>();
+        this.boolList = new LinkedList<>();
+
+        for (int i = 0; i < size; i++) {
+            boolList.add(true);
+            list.add(0);
+        }
+
     }
 
     /**
@@ -37,11 +44,7 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public List<Integer> values() {
-
-        for(int i = 0; i < size; i++) {
-            list.add(i, 0);
-        }
-        return list;
+        return Collections.unmodifiableList(this.list);
     }
 
     /**
@@ -50,14 +53,14 @@ public class LogicsImpl implements Logics {
     @Override
     public List<Boolean> enabledStates() {
 
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             if (list.get(i) == size) {
-                boolList.add(i,false);
+                boolList.set(i, false);
             } else {
-                boolList.add(i,true);
+                boolList.set(i, true);
             }
         }
-        return this.boolList;
+        return Collections.unmodifiableList(this.boolList);
     }
 
     /**
@@ -74,11 +77,14 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public String result() {
-        
-        list.stream()
-            .forEach(i -> s.concat(String.valueOf(i)).concat(" | "));
+        s = "";
 
-        return "<< " + s + ">>";
+        list.stream()
+            .limit(size - 1)
+            .forEach(i -> s = s.concat(String.valueOf(i)).concat("|"));
+            s = s.concat(String.valueOf(list.get(size - 1)));
+
+        return "<<" + s + ">>";
     }
 
     /**
@@ -86,6 +92,7 @@ public class LogicsImpl implements Logics {
      */
     @Override
     public boolean toQuit() {
-        throw new UnsupportedOperationException(ERROR_MESSAGE);
+        return boolList.stream()
+            .noneMatch(Boolean::booleanValue);
     }
 }
