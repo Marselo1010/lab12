@@ -2,6 +2,9 @@ package it.unibo.es2;
 
 public interface Logics {
 
-    int size();
+    String hit(Pair<Integer, Integer> p);
     
+    Boolean gameController();
+
+
 }
