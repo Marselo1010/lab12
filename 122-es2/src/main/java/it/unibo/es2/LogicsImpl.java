@@ -1,65 +1,76 @@
 package it.unibo.es2;
 
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Collections;
+import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+/**
+ * the logic part of the game.
+ */
+public class LogicsImpl implements Logics {
 
-public class LogicsImpl implements Logics{
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final int size;
-    private final List<Pair<Integer, Integer>> buttonList;
-    private final List<Boolean> boolList;
-    private final Pair<Integer, Integer> controllo;
     private final Map<Pair<Integer, Integer>, String> map;
-    private final String s = " ";
-    private int contatore = 0;
-    Boolean bool = true;
+    private int contatore;
+    private final String asterisk;
 
-    public LogicsImpl(int size) {
+    /**
+     * @param size the number of rows and columns
+     */
+    public LogicsImpl(final int size) {
         this.size = size;
-        this.controllo = new Pair<>(-1, 0);
-        this.buttonList = new LinkedList<>();
-        this.boolList = new LinkedList<>();
+        this.asterisk = "*";
         this.map = new LinkedHashMap<>();
+        this.contatore = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                this.map.put(new Pair<>(i, j), " ");
+            }
+        }
 
-            
     }
 
+    /**
+     * @param position the coordinates of the button
+     * @return "*" if before there was " ", otherwise returns " " 
+     */
     @Override
-    public String hit(Pair<Integer, Integer> position) {
-        if (map.containsKey(position) && map.get(position) == "*") {
+    public String hit(final Pair<Integer, Integer> position) {
+        if (map.containsKey(position) && asterisk.equals(map.get(position))) {
             map.put(position, " ");
             return " "; 
-        } else {
-            map.put(position, "*");
-            return "*";
         }
+        map.put(position, asterisk);
+        return asterisk;
     }
 
-    //se tutti gli elementi con stessa x o con stessa y sono o " " o "*" fine gioco
-
+    /**
+     * @return true if you won, false otherwise
+     */
     @Override
     public Boolean gameController() {
-        //System.out.println(map.entrySet());
-        for(this.contatore = 0; contatore < this.size; contatore++ ){
-            bool = map.keySet().stream()
-            .filter( x -> x.x()==contatore) // filtro tutte le x con stesso valore
-            .anyMatch(value -> map.get(value) == " "); // controllo se per il valore key (pair )
-            return bool;
+        for (this.contatore = 0; contatore < this.size; contatore++) {
+            final boolean areAllAsterisks = map.keySet().stream()
+                .filter(x -> x.x() == contatore) // filter same row
+                .allMatch(value -> asterisk.equals(map.get(value))); // all "*"?
+            if (areAllAsterisks) {
+                return true;
+            }
         }
-        for(this.contatore = 0; contatore < this.size; contatore++ ){
-            return map.keySet().stream()
-            .filter( x -> x.x()==contatore) // filtro tutte le x con stesso valore
-            .anyMatch(value -> map.get(value) == " "); // controllo se per il valore key (pair )
-        }
-        
 
-        System.out.println("--------------");
-        //return false;
+        for (this.contatore = 0; contatore < this.size; contatore++) {
+            final boolean areAllAsterisks = map.keySet().stream()
+                .filter(y -> y.y() == contatore) // filter same column
+                .allMatch(value -> asterisk.equals(map.get(value))); // all "*"?
+            if (areAllAsterisks) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

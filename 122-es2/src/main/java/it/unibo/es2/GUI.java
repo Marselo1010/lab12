@@ -37,10 +37,8 @@ public final class GUI extends JFrame {
                 final JButton button = new JButton(" ");
                 button.addActionListener(e -> {
                     final Pair<Integer, Integer> buttonPosition = buttons.get(button);
-                    //button.setText(buttonPosition.toString());
-
                    button.setText(logics.hit(buttonPosition));
-                    
+
                     if (logics.gameController()) {
                         // System.exit(1); // Too brutal!
                         dispose();
